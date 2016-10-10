@@ -39,9 +39,52 @@ int main(int argc,char **argv)
 		}
 	}
 	
-	//The code find the words in the text array..
+	//Find the first word
+	size_t len = TEXT_LEN;
+	char *ptr = NULL;
+	char *pWord = strtok_s(text,&len,delimiters,&ptr); //Find lst word
+	if(!pWord) {
+		printf("No words found. Ending program.\n");
+		return 1;
+	}	
+	strcpy_s(words[word_count],WORD_LEN,pWord);
+	++nword[word_count++];
+	
+
+	//Find the rest of the words
+	bool new_word = true;
+	while(true) {
+		pWord = strtok_s(NULL,&len,delimiters,&ptr);  //Find subsequent word
+		if(!pWord) break;
+
+		for(int i = 0;i<word_count;++i) {
+			if(strcmp(words[i],pWord) == 0) {
+				++nword[i];
+				new_word= false;
+			}
+		}
+
+		if(new_word) {
+			strcpy_s(words[word_count],WORD_LEN,pWord);  //copy to array
+			++nword[word_count++];  //Increment count and index
+		} else {
+			new_word = true;
+		}
+
+		if(word_count > MAX_WORDS-1) {
+			printf("Capacity to store words exceeded.\n");
+			return 1;
+		}
 		
-	//The code to output the words..
+	}
+
+	for(int i=0;i<word_count;++i) {
+		printf(" %-13s %3d",words[i],nword[i]);
+		if((i+1)%4 == 0) {
+			printf("\n");
+		}
+	}	
+	printf("\n");
 	
 	return 0;
 }
